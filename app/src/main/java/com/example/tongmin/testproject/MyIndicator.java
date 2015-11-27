@@ -70,6 +70,7 @@ public class MyIndicator extends HorizontalScrollView implements ViewPager.OnPag
 
     public void setViewPager(ViewPager viewPager) {
         this.viewPager = viewPager;
+        this.viewPager.addOnPageChangeListener(this);
         setHeader();
     }
 
