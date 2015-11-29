@@ -194,19 +194,6 @@ public class MyIndicator extends HorizontalScrollView implements ViewPager.OnPag
 
 
 
-//        for (int i = 0; i < listText.size(); ++i) {
-//
-//            if (i == position) {
-//                if (customeTextViewInter != null) {
-//                    customeTextViewInter.selected(listText.get(position));
-//                    continue;
-//                }
-//            }
-//            else {
-//                customeTextViewInter.unSelect(listText.get(position));
-//            }
-////            listText.get(position).invalidate();
-//        }
     }
 
 
