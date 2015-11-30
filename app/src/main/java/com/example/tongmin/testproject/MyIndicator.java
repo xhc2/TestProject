@@ -6,22 +6,20 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.support.v4.view.ViewPager;
+import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.security.auth.login.LoginException;
 
 /**
- * Created by TongMin on 2015/11/27.
+ * Created by xhc on 2015/11/27.
  */
 public class MyIndicator extends HorizontalScrollView implements ViewPager.OnPageChangeListener {
 
@@ -29,7 +27,7 @@ public class MyIndicator extends HorizontalScrollView implements ViewPager.OnPag
     //下面的滑动的线，现在的位置
     private float currentPosition;
     private ViewPager viewPager;
-    private int scroll = 80;
+    private int scroll = 100;
     /**
      * 下面的线的高度
      * 和宽度
@@ -101,12 +99,12 @@ public class MyIndicator extends HorizontalScrollView implements ViewPager.OnPag
     }
 
     /**
-     * 添加头部的header
+     * 添加头部的tab
      */
     public void setHeader() {
         if (this.viewPager != null) {
             for (int i = 0; i < viewPager.getAdapter().getCount(); ++i) {
-                addTextView(viewPager.getAdapter().getPageTitle(i).toString());
+                addTextView(viewPager.getAdapter().getPageTitle(i).toString() , i);
             }
         }
     }
@@ -126,9 +124,9 @@ public class MyIndicator extends HorizontalScrollView implements ViewPager.OnPag
     /**
      * @param text
      */
-    private void addTextView(String text) {
+    private void addTextView(String text , int position) {
         //判断用户是否自定义了textview
-        TextView textView = new Text(context);
+        TextView textView = new Text(context,position);
         if (customeTextViewInter != null) {
             textView = customeTextViewInter.unSelect(textView);
             if (textView == null) {
@@ -145,8 +143,10 @@ public class MyIndicator extends HorizontalScrollView implements ViewPager.OnPag
      */
     private class Text extends TextView {
 
-        public Text(Context context) {
+        int position;
+        public Text(Context context , int position) {
             super(context);
+            this.position = position;
             this.init(context);
         }
 
@@ -155,10 +155,16 @@ public class MyIndicator extends HorizontalScrollView implements ViewPager.OnPag
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             this.setLayoutParams(params);
             int size = dip2px(context, 10);
+            params.bottomMargin = (int) lineHeight;
             this.setPadding(size, 0, size, 0);
             this.setGravity(Gravity.CENTER);
             this.setTextSize(20);
-
+            this.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    viewPager.setCurrentItem(position);
+                }
+            });
         }
 
     }
@@ -175,24 +181,31 @@ public class MyIndicator extends HorizontalScrollView implements ViewPager.OnPag
         invalidate();
     }
 
+    private void unSelect(TextView tv) {
+        tv.setBackgroundColor(Color.parseColor("#ffffff"));
+    }
+
+    private void selected(TextView tv) {
+        tv.setBackgroundColor(Color.parseColor("#1A3DFF"));
+    }
+
     private void changeTextView(int position) {
 
         int count = linearContain.getChildCount();
-        TextView t = (TextView)linearContain.getChildAt(0);
-        for(int i = 0 ; i < count ; ++ i){
-            if( i == position){
+
+        for (int i = 0; i < count; ++i) {
+            TextView t = (TextView) linearContain.getChildAt(i);
+            if (i == position) {
                 if (customeTextViewInter != null) {
+//                    selected(t);
                     customeTextViewInter.selected(t);
                     continue;
                 }
-            }
-            else {
+            } else {
+//                unSelect(t);
                 customeTextViewInter.unSelect(t);
             }
-
         }
-
-
 
     }
 
