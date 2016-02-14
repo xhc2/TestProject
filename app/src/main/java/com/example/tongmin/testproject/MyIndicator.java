@@ -6,10 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.support.v4.view.ViewPager;
-import android.text.TextPaint;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -71,7 +68,6 @@ public class MyIndicator extends HorizontalScrollView implements ViewPager.OnPag
         super(context, attrs, defStyleAttr);
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.MyIndicator, defStyleAttr, 0);
         lineHeight = a.getDimension(R.styleable.MyIndicator_lineHeight, 10);
-        Log.e("xhc", "看看单位是什么" + lineHeight);
         lineColor = a.getColor(R.styleable.MyIndicator_lineColor, Color.BLACK);
 
         a.recycle();
@@ -94,6 +90,13 @@ public class MyIndicator extends HorizontalScrollView implements ViewPager.OnPag
     public void setViewPager(ViewPager viewPager) {
         this.viewPager = viewPager;
         this.viewPager.addOnPageChangeListener(this);
+        this.post(new Runnable() {
+            @Override
+            public void run() {
+                //写在这里的原因是能获取到宽高等数据
+                changeLinePosition(0, 0);
+            }
+        });
         setHeader();
         changeTextView(0);
     }
@@ -104,7 +107,7 @@ public class MyIndicator extends HorizontalScrollView implements ViewPager.OnPag
     public void setHeader() {
         if (this.viewPager != null) {
             for (int i = 0; i < viewPager.getAdapter().getCount(); ++i) {
-                addTextView(viewPager.getAdapter().getPageTitle(i).toString() , i);
+                addTextView(viewPager.getAdapter().getPageTitle(i).toString(), i);
             }
         }
     }
@@ -124,9 +127,9 @@ public class MyIndicator extends HorizontalScrollView implements ViewPager.OnPag
     /**
      * @param text
      */
-    private void addTextView(String text , int position) {
+    private void addTextView(String text, int position) {
         //判断用户是否自定义了textview
-        TextView textView = new Text(context,position);
+        TextView textView = new Text(context, position);
         if (customeTextViewInter != null) {
             textView = customeTextViewInter.unSelect(textView);
             if (textView == null) {
@@ -138,13 +141,37 @@ public class MyIndicator extends HorizontalScrollView implements ViewPager.OnPag
         linearContain.addView(textView);
     }
 
+
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+
+
+        LinearLayout contain = (LinearLayout) getChildAt(0);
+
+        int childCount = contain.getChildCount();
+
+
+        if (contain.getMeasuredWidth() < getMeasuredWidth()) {
+            //宽度不够,让子控件平分宽度
+            contain.setMinimumWidth(getMeasuredWidth());
+            int childWidth = getMeasuredWidth() / childCount;
+            for (int i = 0; i < childCount; ++i) {
+                View view = contain.getChildAt(i);
+                view.setMinimumWidth(childWidth);
+            }
+        } else {
+            super.onLayout(changed, l, t, r, b);
+        }
+    }
+
     /**
      * 默认类型的text
      */
     private class Text extends TextView {
 
         int position;
-        public Text(Context context , int position) {
+
+        public Text(Context context, int position) {
             super(context);
             this.position = position;
             this.init(context);
@@ -170,6 +197,8 @@ public class MyIndicator extends HorizontalScrollView implements ViewPager.OnPag
     }
 
     private void changeLinePosition(int position, float offset) {
+        int count = linearContain.getChildCount();
+        if (count <= 0) return;
 
         int left = linearContain.getChildAt(position).getLeft();
         int right = linearContain.getChildAt(position).getRight();
@@ -197,12 +226,9 @@ public class MyIndicator extends HorizontalScrollView implements ViewPager.OnPag
             TextView t = (TextView) linearContain.getChildAt(i);
             if (i == position) {
                 if (customeTextViewInter != null) {
-//                    selected(t);
                     customeTextViewInter.selected(t);
-                    continue;
                 }
             } else {
-//                unSelect(t);
                 customeTextViewInter.unSelect(t);
             }
         }
@@ -228,9 +254,9 @@ public class MyIndicator extends HorizontalScrollView implements ViewPager.OnPag
 
     @Override
     public void onPageScrollStateChanged(int state) {
-        if (state == ViewPager.SCROLL_STATE_IDLE) {
-            //滑动到点后
-
-        }
+//        if (state == ViewPager.SCROLL_STATE_IDLE) {
+//            //滑动到点后
+//
+//        }
     }
 }

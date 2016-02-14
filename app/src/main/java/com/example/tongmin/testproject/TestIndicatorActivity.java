@@ -29,7 +29,7 @@ public class TestIndicatorActivity extends FragmentActivity implements MyIndicat
         indicator = (MyIndicator) findViewById(R.id.myindicator);
         indicator.setCustomeTextViewInter(this);
         listFragment =new ArrayList<>();
-        for(int i = 0 ;i < 10 ;i ++){
+        for(int i = 0 ;i < 3;i ++){
             Bundle bundle = new Bundle();
             bundle.putString("who","hello world "+ i);
             MyFragment fragment = MyFragment.getInstance(bundle);
