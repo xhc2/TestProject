@@ -224,12 +224,12 @@ public class MyIndicator extends HorizontalScrollView implements ViewPager.OnPag
 
         for (int i = 0; i < count; ++i) {
             TextView t = (TextView) linearContain.getChildAt(i);
-            if (i == position) {
-                if (customeTextViewInter != null) {
+            if (customeTextViewInter != null) {
+                if (i == position) {
                     customeTextViewInter.selected(t);
+                } else {
+                    customeTextViewInter.unSelect(t);
                 }
-            } else {
-                customeTextViewInter.unSelect(t);
             }
         }
 
