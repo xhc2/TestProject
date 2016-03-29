@@ -11,7 +11,7 @@ import android.widget.TextView;
 /**
  * Created by TongMin on 2015/11/26.
  */
-public class MyFragment extends Fragment {
+public class MyFragment extends Fragment implements View.OnClickListener {
 
     private String str  ;
     private TextView tv;
@@ -39,5 +39,10 @@ public class MyFragment extends Fragment {
         MyFragment fr = new MyFragment();
         fr.setArguments(bundle);
         return fr;
+    }
+
+    @Override
+    public void onClick(View v) {
+
     }
 }

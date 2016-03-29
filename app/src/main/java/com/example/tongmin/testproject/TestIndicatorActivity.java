@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.view.View;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -15,16 +16,19 @@ import java.util.List;
 /**
  * Created by xhc on 2015/11/26.
  */
-public class TestIndicatorActivity extends FragmentActivity implements MyIndicator.CustomeTextViewInter {
+public class TestIndicatorActivity extends FragmentActivity implements MyIndicator.CustomeTextViewInter , View.OnClickListener {
 
     private MyPageAdapter adapter ;
     private List<MyFragment> listFragment ;
     private ViewPager pager;
     private MyIndicator indicator;
+    private int count = 0 ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.mypage);
+        findViewById(R.id.bt_refresh).setOnClickListener(this);
+        findViewById(R.id.jian).setOnClickListener(this);
         pager = (ViewPager)findViewById(R.id.mypage);
         indicator = (MyIndicator) findViewById(R.id.myindicator);
         indicator.setCustomeTextViewInter(this);
@@ -53,7 +57,28 @@ public class TestIndicatorActivity extends FragmentActivity implements MyIndicat
         return tv;
     }
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.bt_refresh:
+                Bundle bundle = new Bundle();
+                bundle.putString("who", "我是新加的 " + (count++));
+                MyFragment fragment = MyFragment.getInstance(bundle);
+                listFragment.add(fragment);
+                adapter.notifyDataSetChanged();
+                indicator.notifyDataSetChanged(pager);
+            break;
+            case R.id.jian:
+                listFragment.remove(listFragment.size() - 1);
+                adapter.notifyDataSetChanged();
+                indicator.notifyDataSetChanged(pager);
+                break;
+        }
+    }
+
     class MyPageAdapter extends FragmentPagerAdapter {
+
+
 
         public MyPageAdapter(FragmentManager fm) {
             super(fm);

@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -101,6 +102,27 @@ public class MyIndicator extends HorizontalScrollView implements ViewPager.OnPag
         changeTextView(0);
     }
 
+
+    public void notifyDataSetChanged(ViewPager viewPager){
+        this.viewPager = viewPager;
+        this.viewPager.clearOnPageChangeListeners();
+        this.viewPager.addOnPageChangeListener(this);
+        linearContain.removeAllViews();
+        this.post(new Runnable() {
+            @Override
+            public void run() {
+                //写在这里的原因是能获取到宽高等数据
+                changeLinePosition(0, 0);
+
+            }
+        });
+        setHeader();
+        changeTextView(0);
+        currentPosition = 0;
+        this.viewPager.setCurrentItem(0);
+        requestLayout();
+    }
+
     /**
      * 添加头部的tab
      */
@@ -150,8 +172,12 @@ public class MyIndicator extends HorizontalScrollView implements ViewPager.OnPag
 
         int childCount = contain.getChildCount();
 
-
-        if (contain.getMeasuredWidth() < getMeasuredWidth()) {
+        int totalSize = 0;
+        for(int i = 0 ;i < childCount ; ++ i){
+            totalSize += contain.getChildAt(i).getMeasuredWidth();
+        }
+        Log.e("xhc","layout----"+childCount+" "+totalSize +" big "+ getMeasuredWidth());
+        if (totalSize < getMeasuredWidth()) {
             //宽度不够,让子控件平分宽度
             contain.setMinimumWidth(getMeasuredWidth());
             int childWidth = getMeasuredWidth() / childCount;
@@ -206,7 +232,7 @@ public class MyIndicator extends HorizontalScrollView implements ViewPager.OnPag
         offset = lineWidth * offset;
         currentPosition = left + offset;
         this.scrollTo((int) currentPosition - scroll, 0);
-
+        Log.e("xhc","current position "+currentPosition);
         invalidate();
     }
 

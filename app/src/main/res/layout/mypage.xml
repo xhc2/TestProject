@@ -5,6 +5,20 @@
     android:orientation="vertical"
     android:layout_height="match_parent">
 
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/bt_refresh"
+        android:text="新增fragment"
+        />
+
+    <Button
+        android:text="减去fragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/jian"
+        />
+
     <com.example.tongmin.testproject.MyIndicator
         android:layout_width="match_parent"
         android:layout_height="50dp"
